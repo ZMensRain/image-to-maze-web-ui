@@ -1,24 +1,51 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import "./style.css";
+import "./lib/go/wasm_exec";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+import wasm from "./lib/go/main.wasm?url";
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+declare global {
+  export interface Window {
+    Go: {
+      new (): {
+        run: (inst: WebAssembly.Instance) => Promise<void>;
+        importObject: WebAssembly.Imports;
+      };
+    };
+    generateMaze: () => any;
+  }
+}
+
+export async function load() {
+  if (!WebAssembly) {
+    throw new Error("WebAssembly is not supported in your browser");
+  }
+
+  const go = new window.Go();
+  const result = await WebAssembly.instantiateStreaming(
+    // load the binary
+    fetch(wasm),
+    go.importObject
+  );
+
+  // run it
+  go.run(result.instance);
+
+  // wait until it creates the function we need
+  await until(() => window.generateMaze != undefined);
+  // return the function
+  return window.generateMaze;
+}
+
+// helper Promise which waits until `f` is true
+const until = (f: () => boolean): Promise<void> => {
+  return new Promise((resolve) => {
+    const intervalCode = setInterval(() => {
+      if (f()) {
+        resolve();
+        clearInterval(intervalCode);
+      }
+    }, 10);
+  });
+};
+
+load();

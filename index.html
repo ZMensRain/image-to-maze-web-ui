@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,7 +7,56 @@
     <title>image-to-maze</title>
   </head>
   <body>
-    <div id="app"></div>
+    <main>
+      <div id="config">
+        <header>
+          <h1>Image To Maze Web UI</h1>
+          <p>
+            Image to Maze is a project written in Golang that takes an image
+            mask (black and white image) and outputs a maze that will have two
+            sections one of which if filled returns the original image mask.
+            <a href="/#example">See The Example</a>
+          </p>
+        </header>
+        <form id="config-form">
+          <div class="input-group">
+            <p>Image</p>
+            <label for="imageInput">
+              Browse for Image Mask
+              <input id="imageInput" type="file" required />
+            </label>
+          </div>
+          <div class="input-group">
+            <label for="backgroundInput">Background Color</label>
+            <input
+              id="backgroundInput"
+              placeholder="#ffffff"
+              value="#ffffff"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="foregroundInput">Foreground Color</label>
+            <input
+              id="foregroundInput"
+              placeholder="#000000"
+              value="#000000"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div id="preview">
+        <button>Download Maze</button>
+        <p>To</p>
+        <div class="image"></div>
+        <p>Filled</p>
+        <div class="image"></div>
+      </div>
+      <div id="example">
+        <h1>Example</h1>
+      </div>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -3,9 +3,13 @@
 
 package main
 
-import "syscall/js"
+import (
+	"fmt"
+	"syscall/js"
+)
 
 func main() {
+	fmt.Println("WASM loaded")
 	js.Global().Set("generateMaze", js.FuncOf(generateMaze))
 
 	// wait
