@@ -92,7 +92,7 @@ label:has(input[type="file"]) {
   border-radius: 10px;
 }
 
-.image:not(:has(*)) {
+.image:not([src]) {
   min-height: 100px;
   aspect-ratio: 1.78;
 }
