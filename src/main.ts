@@ -73,7 +73,7 @@ async function update() {
 
   let data = await imageInput.files[0].bytes();
 
-  generateMaze(data, foregroundInput.value, backgroundInput.value, callback);
+  generateMaze(data, backgroundInput.value, foregroundInput.value, callback);
 }
 
 function callback(data: string) {
