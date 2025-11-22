@@ -110,3 +110,13 @@ button:hover {
   transition: 200ms;
   opacity: 0.9;
 }
+
+.example {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+}
+#examples {
+  display: flex;
+  gap: 2rem;
+}
