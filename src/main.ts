@@ -11,7 +11,12 @@ declare global {
         importObject: WebAssembly.Imports;
       };
     };
-    generateMaze: () => any;
+    generateMaze: (
+      imgData: Uint8Array,
+      backgroundColor: string,
+      foregroundColor: string,
+      callback: (mazeData: string) => void
+    ) => any;
   }
 }
 
@@ -48,4 +53,51 @@ const until = (f: () => boolean): Promise<void> => {
   });
 };
 
-load();
+const imageInput = document.getElementById("imageInput");
+const backgroundInput = document.getElementById("backgroundInput");
+const foregroundInput = document.getElementById("foregroundInput");
+const downloadButton = document.getElementById("downloadButton");
+
+const generateMaze = await load();
+
+async function update() {
+  if (!(imageInput instanceof HTMLInputElement)) return;
+  if (imageInput.files === null) return;
+  if (imageInput.files.length < 1) return;
+  //background checks
+  if (!(backgroundInput instanceof HTMLInputElement)) return;
+  if (backgroundInput.value.length !== 7) return;
+  //foreground checks
+  if (!(foregroundInput instanceof HTMLInputElement)) return;
+  if (foregroundInput.value.length !== 7) return;
+
+  let data = await imageInput.files[0].bytes();
+
+  generateMaze(data, foregroundInput.value, backgroundInput.value, callback);
+}
+
+function callback(data: string) {
+  const mazeImage = document.getElementById("mazeImage");
+  if (!(mazeImage instanceof HTMLImageElement)) return;
+
+  mazeImage.src = "data:image/png;base64," + data;
+}
+
+imageInput?.addEventListener("change", update);
+backgroundInput?.addEventListener("input", update);
+foregroundInput?.addEventListener("input", update);
+downloadButton?.addEventListener("click", () => {
+  const mazeImage = document.getElementById("mazeImage");
+  if (!(mazeImage instanceof HTMLImageElement)) return;
+
+  const link = document.createElement("a");
+  //link to the uploaded image
+  //  in your local storage
+  link.href = mazeImage.src;
+  link.download = "true";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
+await update();
