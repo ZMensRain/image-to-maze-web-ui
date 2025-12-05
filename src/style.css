@@ -139,6 +139,7 @@ footer ul {
   }
   #example {
     grid-column: span 1;
+    height: fit-content;
   }
   #examples {
     flex-direction: column;
