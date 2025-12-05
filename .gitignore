@@ -26,3 +26,4 @@ dist-ssr
 #build
 *.wasm
 wasm_exec.js
+.vercel
